@@ -1,0 +1,12 @@
+[package]
+name = "cluster-agent"
+version = "0.1.2"
+authors = ["Tim Park <timfpark@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hyper = { version = "0.14", features = ["full"] }
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+tokio = { version = "1", features = ["full"] }
