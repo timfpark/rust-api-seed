@@ -9,7 +9,7 @@ RUN cp target/release/cluster-agent /build/
 
 FROM ubuntu:18.04
 
-RUN apt-get update && apt-get upgrade && apt-get -y install openssl
+RUN apt-get update && apt-get -y upgrade && apt-get -y install openssl
 
 COPY --from=build /build/cluster-agent /
 
