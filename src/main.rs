@@ -138,6 +138,8 @@ async fn metrics_handler() -> Result<impl Reply, Rejection> {
 
 #[tokio::main]
 async fn main() {
+    pretty_env_logger::init();
+
     let port_string = env::var("PORT").unwrap_or("8080".to_string());
     let port = port_string.parse::<u16>().unwrap();
 
@@ -146,8 +148,6 @@ async fn main() {
     let endpoints = parse_endpoints();
     let metrics = create_metrics(&my_name, &endpoints);
 
-    // register_custom_metrics();
-
     ping_loop(endpoints, metrics).await;
 
     // GET /healthz => 200 OK with body "OK"
@@ -155,8 +155,10 @@ async fn main() {
         .map(|| "OK");
 
     let metrics_route = warp::path!("metrics").and_then(metrics_handler);
+    let api = metrics_route.or(healthz_route);
+    let routes = api.with(warp::log("cluster-agent"));
 
-    warp::serve(metrics_route.or(healthz_route))
+    warp::serve(routes)
         .run(([127, 0, 0, 1], port))
         .await;
 }
