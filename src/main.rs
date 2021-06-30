@@ -21,13 +21,23 @@ async fn ping_server(endpoint: &Endpoint, metric: &IntGauge) {
     use std::time::Instant;
     let now = Instant::now();
 
-    let _response_result = reqwest::get(&endpoint.url).await;
+    let response_result = reqwest::get(&endpoint.url).await;
 
-    let duration = now.elapsed();
-    metric.set(duration.as_millis() as i64);
+    match response_result {
+        Ok(response) => {
+            if response.status() == 200 {
+                let duration = now.elapsed();
+                metric.set(duration.as_millis() as i64);
 
-    println!("http call to {} took {}", endpoint.name, duration.as_millis())
-
+                println!("http call to {} took {}", endpoint.name, duration.as_millis())
+            } else {
+                println!("http call failed with status code {}", response.status())
+            }
+        }
+        Err(error) => {
+            println!("http call failed with error {}", error)
+        }
+    }
 }
 
 async fn ping_loop(endpoints: Vec<Endpoint>, metrics: HashMap<String, IntGauge>) {
