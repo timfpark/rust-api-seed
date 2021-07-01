@@ -100,7 +100,9 @@ fn create_metrics(my_name: &str, endpoints: &Vec<Endpoint>) -> (HashMap<String, 
     for endpoint in endpoints {
         let gauge_name = format!("{}_{}_latency", my_name, endpoint.name);
         let help_message = format!("Latency (ms) between {} and {}", my_name, endpoint.name);
-        let gauge = IntGauge::new(gauge_name, help_message).expect("metric can't be created");
+        let gauge = IntGauge::new(gauge_name.clone(), help_message).expect("metric can't be created");
+
+        println!("creating metric {} for endpoint {}", gauge_name, endpoint.name);
 
         endpoint_metrics.insert(endpoint.name.clone(), gauge.clone());
         REGISTRY.register(Box::new(gauge.clone())).expect("gauge failed to be registered");
