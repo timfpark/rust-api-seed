@@ -20,7 +20,7 @@ spec:
             retries: 3
     values:
         image:
-            tag: 20210701T165254Z # {"$imagepolicy": "flux-system:cluster-agent-main:tag"}
+            tag: {{imageTag}} # {"$imagepolicy": "flux-system:cluster-agent-main:tag"}
             repository: tpark.azurecr.io/cluster-agent-{{ring}}
         imagePullSecret: "acr-secret"
         port: 80
