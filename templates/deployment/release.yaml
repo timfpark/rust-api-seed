@@ -1,10 +1,10 @@
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
-    name: cluster-agent
+    name: cluster-agent-{{ring}}
     namespace: default
 spec:
-    releaseName: cluster-agent
+    releaseName: cluster-agent-{{ring}}
     chart:
         spec:
             chart: external-service
@@ -21,18 +21,21 @@ spec:
     values:
         image:
             tag: 20210701T165254Z # {"$imagepolicy": "flux-system:cluster-agent-main:tag"}
-            repository: tpark.azurecr.io/cluster-agent-main
+            repository: tpark.azurecr.io/cluster-agent-{{ring}}
         imagePullSecret: "acr-secret"
         port: 80
         replicas: 1
         service:
-            name: cluster-agent-main
+            name: cluster-agent-{{ring}}
             port: 80
         tls:
             secret: trailguru-app-tls
 
         environment:
             ENDPOINT: "https://cluster-agent.trailguru.app/healthz"
-            CLUSTER_NAME: "{{CLUSTER_NAME}}"
+            CLUSTER_NAME: "{{clusterName}}"
+            CLOUD: "{{cloud}}"
+            CLOUD_REGION: "{{cloudRegion}}"
             PORT: "80"
+            RING: "{{ring}}"
             RUST_LOG: "cluster-agent"
