@@ -20,7 +20,7 @@ spec:
             retries: 3
     values:
         image:
-            tag: {{imageTag}} # {"$imagepolicy": "flux-system:cluster-agent-main:tag"}
+            tag: {{imageTag}}
             repository: tpark.azurecr.io/cluster-agent-{{ring}}
         imagePullSecret: "acr-secret"
         port: 80
@@ -29,7 +29,7 @@ spec:
             name: cluster-agent-{{ring}}
             port: 80
         tls:
-            secret: trailguru-app-tls
+            secret: nublada-cloud-tls
 
         environment:
             ENDPOINT: "https://cluster-agent.trailguru.app/healthz"
