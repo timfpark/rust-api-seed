@@ -32,7 +32,7 @@ spec:
             secret: nublada-cloud-tls
 
         environment:
-            ENDPOINT: "https://cluster-agent.trailguru.app/healthz"
+            ENDPOINT: "https://cluster-agent.nublada.cloud/healthz"
             CLUSTER_NAME: "{{clusterName}}"
             CLOUD: "{{cloud}}"
             CLOUD_REGION: "{{cloudRegion}}"
