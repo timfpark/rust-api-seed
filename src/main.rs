@@ -1,8 +1,8 @@
 use lazy_static::lazy_static;
 
-use prometheus::{IntCounter, IntGauge, Registry};
+use prometheus::{/* IntCounter, IntGauge, */Registry};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+// use std::collections::HashMap;
 use std::env;
 use std::time::Duration;
 use tokio::spawn;
@@ -31,7 +31,7 @@ async fn ping_server(endpoint: &str) -> Result<(), reqwest::Error> {
         Ok(response) => {
             if response.status() == 200 {
                 let remote_service_metadata: ServiceMetadata = response.json().await?;
-                println!("http call to {} took {}", remote_service_metadata.cluster_name, duration.as_millis());
+                println!("https call successful to remote cluster name {} took {}ms", remote_service_metadata.cluster_name, duration.as_millis());
 
                 /*
                 let metric = &metrics[&endpoint.name];
@@ -40,7 +40,7 @@ async fn ping_server(endpoint: &str) -> Result<(), reqwest::Error> {
                 */
 
             } else {
-                println!("http call failed with status code {}", response.status())
+                println!("https call failed with status code {}", response.status())
             }
             Ok(())
         }
@@ -50,7 +50,7 @@ async fn ping_server(endpoint: &str) -> Result<(), reqwest::Error> {
             error_metric.inc();
             */
 
-            println!("http call failed with error {}", error);
+            println!("https call failed with error {}", error);
 
             Err(error)
         }
@@ -59,11 +59,14 @@ async fn ping_server(endpoint: &str) -> Result<(), reqwest::Error> {
 
 async fn ping_loop(endpoint: String /*, metrics: HashMap<String, IntGauge>, error_metrics: HashMap<String, IntCounter>*/) {
     spawn(async move {
-        let mut interval = time::interval(Duration::from_millis(100));
+        let mut interval = time::interval(Duration::from_millis(1000));
         loop {
             interval.tick().await;
 
-            ping_server(&endpoint).await;
+            match ping_server(&endpoint).await {
+                _ => {}
+            }
+
         }
     });
 }
@@ -170,7 +173,7 @@ async fn main() {
     let cluster_name = env::var("CLUSTER_NAME").unwrap_or("UNKNOWN".to_string());
     let cloud = env::var("CLOUD").unwrap_or("UNKNOWN".to_string());
     let cloud_region = env::var("CLOUD_REGION").unwrap_or("UNKNOWN".to_string());
-    let ring = env::var("RING").unwrap_or("UNKNOWN".to_string());
+    // let ring = env::var("RING").unwrap_or("UNKNOWN".to_string());
 
     let metadata = ServiceMetadata {
         cluster_name,
