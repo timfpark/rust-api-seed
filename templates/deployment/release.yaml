@@ -28,6 +28,7 @@ spec:
         service:
             name: cluster-agent-{{ring}}
             port: 80
+            dns: cluster-agent.nublada.cloud
         tls:
             secret: nublada-cloud-tls
 
