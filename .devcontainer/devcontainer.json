@@ -1,45 +1,64 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/microsoft/vscode-dev-containers/tree/v0.191.1/containers/rust
 {
-  "name": "Rust",
-  "build": {
-    "dockerfile": "Dockerfile"
-  },
-  "runArgs": [
-    "--cap-add=SYS_PTRACE",
-    "--security-opt",
-    "--init",
-    "seccomp=unconfined"
-  ],
-  "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ],
+	"name": "Kubernetes-in-Codespaces",
+	"dockerFile": "Dockerfile",
 
-  // Set *default* container specific settings.json values on container create.
-  "settings": {
-    "lldb.executable": "/usr/bin/lldb",
-    // VS Code don't watch files under ./target
-    "files.watcherExclude": {
-      "**/target/**": true
-    },
-    "rust-analyzer.checkOnSave.command": "clippy"
-  },
+	// do not change these if you want Docker in Docker support
+	"runArgs": ["--init", "--privileged"],
+	"mounts": [ "source=/var/run/docker.sock,target=/var/run/docker-host.sock,type=bind" ],
+	"overrideCommand": false,
 
-  // Add the IDs of extensions you want installed when the container is created.
-  "extensions": [
-    "vadimcn.vscode-lldb",
-    "mutantdino.resourcemonitor",
-    "matklad.rust-analyzer",
-    "tamasfe.even-better-toml",
-    "serayuzgur.crates"
-  ],
+	// some base images require a specific user name
+	"remoteUser": "vscode",
 
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
+	// Set container specific settings
+	"settings": {
+		"terminal.integrated.defaultProfile.linux": "zsh"
+	},
 
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": "rustc --version",
+	"hostRequirements": {
+		"cpus": 4
+	},
+	
+	// forward ports for the app
+	"forwardPorts": [
+		3500,
+		5000,
+		9411,
+		30000,
+		30080,
+		30088,
+		32000
+	],
 
-  // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
-  "remoteUser": "vscode"
+	// add labels
+	"portsAttributes": {
+		"3500": { "label": "dapr" },
+		"5000": { "label": "weather" },
+		"9411": { "label": "Zipkin" },
+		"30000": { "label": "Prometheus" },
+		"30080": { "label": "ngsa-app" },
+		"30088": { "label": "WebV" },
+		"32000": { "label": "Grafana" },
+	},
+
+	// Install extensions
+	"extensions": [
+		"ms-dotnettools.csharp",
+		"ms-azuretools.vscode-docker",
+		"ms-azuretools.vscode-dapr",
+		"ms-kubernetes-tools.vscode-kubernetes-tools",
+		"davidanson.vscode-markdownlint",
+		"gruntfuggly.todo-tree",
+		"mutantdino.resourcemonitor",
+		"humao.rest-client"
+	],
+
+	// Use 'onCreateCommand' to run commands as part of container creation.
+	"onCreateCommand": "/bin/bash -c .devcontainer/on-create.sh",
+
+	// Use 'postCreateCommand' to run commands after the container is created.
+	"postCreateCommand": "/bin/bash -c .devcontainer/post-create.sh",
+
+	// Use 'postStartCommand' to run commands after the container starts.
+	"postStartCommand": "/bin/bash -c .devcontainer/post-start.sh"
 }
