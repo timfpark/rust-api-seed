@@ -17,10 +17,6 @@
         "terminal.integrated.defaultProfile.linux": "zsh"
     },
 
-    "hostRequirements": {
-        "cpus": 4
-    },
-
     // Install extensions
     "extensions": [
         "ms-azuretools.vscode-docker",
