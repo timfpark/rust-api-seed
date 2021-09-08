@@ -15,4 +15,13 @@ echo "post-create start" >> ~/status
 curl -s https://fluxcd.io/install.sh | sudo bash
 sudo chmod a+x /usr/local/bin/flux
 
+k3d cluster create --registry-use k3d-registry.localhost:5500 --config .devcontainer/k3d.yaml --k3s-server-arg "--no-deploy=traefik" --k3s-server-arg "--no-deploy=servicelb"
+
+# wait for cluster to be ready
+kubectl wait node --for condition=ready --all --timeout=60s
+sleep 5
+kubectl wait pod -A --all --for condition=ready --timeout=60s
+
+GITHUB_TOKEN=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 flux bootstrap github --owner=timfpark --components-extra=image-reflector-controller,image-automation-controller --repository=workload-cluster-gitops --branch=main --path=tim-dev --personal --network-policy=false
+
 echo "post-create complete" >> ~/status
