@@ -13,6 +13,6 @@ echo "post-create start" >> ~/status
 # add your commands here
 
 curl -s https://fluxcd.io/install.sh | sudo bash
-chmod 777 /usr/local/bin/flux
+sudo chmod a+x /usr/local/bin/flux
 
 echo "post-create complete" >> ~/status
