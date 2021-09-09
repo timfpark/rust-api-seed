@@ -1,5 +1,5 @@
 [package]
-name = "cluster-agent"
+name = "rust-api-seed"
 version = "0.1.2"
 authors = ["Tim Park <timfpark@gmail.com>"]
 edition = "2018"
@@ -7,6 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+axum = "0.2"
 lazy_static = "1.4"
 pretty_env_logger = "0.4"
 prometheus = "0.12"
@@ -14,4 +15,4 @@ reqwest = { version = "0.11", features = ["blocking", "json"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = {version = "1.0" }
 tokio = { version = "1", features = ["full"] }
-warp = "0.3"
+tracing = "0.1"
