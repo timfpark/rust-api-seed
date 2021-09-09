@@ -6,11 +6,11 @@ use lazy_static::lazy_static;
 use prometheus::{Encoder, IntCounter, Registry};
 use std::env;
 use std::net::SocketAddr;
-use tracing;
 
 lazy_static! {
     pub static ref REGISTRY: Registry = Registry::new();
     pub static ref WELCOMES_SERVED: IntCounter = IntCounter::new("welcomes_served", "Number of Welcomes served").expect("welcomes_served can't be created");
+    pub static ref WELCOME: String = env::var("WELCOME").unwrap_or("Welcome Visitor!".to_string());
 }
 
 #[tokio::main]
@@ -76,9 +76,8 @@ async fn metrics() -> String {
     res
 }
 
-
 async fn root() -> &'static str {
     WELCOMES_SERVED.inc();
 
-    "Hello, World!"
+    &WELCOME
 }
